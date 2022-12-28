@@ -1,0 +1,270 @@
+basePath: /
+definitions:
+  model.AuthenResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+    type: object
+  model.CreateUserInput:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    type: object
+  model.ListUserResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
+      total:
+        type: integer
+    type: object
+  model.RefreshTokenRequest:
+    properties:
+      token:
+        type: string
+    type: object
+  model.UpdateUserInput:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+    required:
+    - email
+    type: object
+  model.User:
+    properties:
+      avatar:
+        type: string
+      created_at:
+        type: number
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: number
+    required:
+    - email
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: tchh.lucpham@gmail.com
+    name: kul
+  description: Document API server
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Kul API
+  version: "1.0"
+paths:
+  /token/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/model.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+      summary: refresh token
+      tags:
+      - users
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: get list user with pagination
+      parameters:
+      - description: max number of user per page
+        in: query
+        name: limit
+        type: number
+      - description: page offset
+        in: query
+        name: offset
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ListUserResponse'
+        "400":
+          description: Bad Request
+      summary: get list user
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: create user
+      parameters:
+      - description: request body
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateUserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+      summary: create user
+      tags:
+      - users
+  /users/:id:
+    patch:
+      consumes:
+      - application/json
+      description: update user
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: body data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateUserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+      summary: update user
+      tags:
+      - users
+  /users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get user by id
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+      summary: get user by id
+      tags:
+      - users
+  /users/check:
+    get:
+      consumes:
+      - application/json
+      description: check user exist or not
+      parameters:
+      - description: user email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+      summary: check user exist or not
+      tags:
+      - users
+  /users/login:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AuthenResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+      security:
+      - basicAuth: []
+      summary: Login to system
+      tags:
+      - users
+  /users/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "401":
+          description: Unauthorized
+      summary: Get access's information
+      tags:
+      - users
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
