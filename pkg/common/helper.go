@@ -39,7 +39,7 @@ func VerifyPassword(pass, hashpass string) bool {
 func ValidateBodyData(c *gin.Context, data interface{}) error {
 	err := c.BindJSON(data)
 	if err != nil {
-		return errors.New(ERROR_BIND_JSON)
+		return errors.New(ERROR_BIND_JSON + ": " + err.Error())
 	}
 
 	err = validator.New().Struct(data)

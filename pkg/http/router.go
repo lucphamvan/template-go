@@ -7,6 +7,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"tchh.lucpham/pkg/middleware"
+	"tchh.lucpham/pkg/service/quiz"
 	"tchh.lucpham/pkg/service/user"
 )
 
@@ -28,6 +29,7 @@ func SetupRouter() *gin.Engine {
 	router.Use(cors.New(config))
 
 	userHandler := user.NewHandler(user.ServiceInstance)
+	quizHandler := quiz.NewHanlder(*quiz.ServiceInstance)
 
 	router.GET("/ping", healcheck)
 
@@ -43,6 +45,9 @@ func SetupRouter() *gin.Engine {
 	authRouter.GET("/users/:id", userHandler.Get)
 	authRouter.GET("/users", middleware.ValidateLimitOffset, userHandler.GetList)
 	authRouter.PATCH("/users/:id", userHandler.Update)
+
+	// quiz
+	authRouter.POST("/quizzes", quizHandler.CreateQuiz)
 
 	return router
 }

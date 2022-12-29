@@ -23,6 +23,45 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/quizzes": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "create quiz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "create quiz",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "quiz",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateQuizInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/token/refresh": {
             "post": {
                 "consumes": [
@@ -61,6 +100,11 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "get list user with pagination",
                 "consumes": [
                     "application/json"
@@ -136,6 +180,11 @@ const docTemplate = `{
         },
         "/users/:id": {
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "update user",
                 "consumes": [
                     "application/json"
@@ -248,6 +297,11 @@ const docTemplate = `{
         },
         "/users/me": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -273,6 +327,11 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "get user by id",
                 "consumes": [
                     "application/json"
@@ -308,6 +367,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.AnswerOption": {
+            "type": "object",
+            "required": [
+                "content",
+                "id"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "model.AuthenResponse": {
             "type": "object",
             "properties": {
@@ -319,6 +393,48 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/model.User"
+                }
+            }
+        },
+        "model.CreateQuestionInput": {
+            "type": "object",
+            "required": [
+                "answer_correct_id",
+                "answer_option",
+                "content"
+            ],
+            "properties": {
+                "answer_correct_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "answer_option": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.AnswerOption"
+                    }
+                },
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateQuizInput": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "owner_id": {
+                    "type": "string"
+                },
+                "question": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.CreateQuestionInput"
+                    }
                 }
             }
         },

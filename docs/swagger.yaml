@@ -1,5 +1,15 @@
 basePath: /
 definitions:
+  model.AnswerOption:
+    properties:
+      content:
+        type: string
+      id:
+        type: string
+    required:
+    - content
+    - id
+    type: object
   model.AuthenResponse:
     properties:
       access_token:
@@ -8,6 +18,34 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/model.User'
+    type: object
+  model.CreateQuestionInput:
+    properties:
+      answer_correct_id:
+        items:
+          type: string
+        type: array
+      answer_option:
+        items:
+          $ref: '#/definitions/model.AnswerOption'
+        type: array
+      content:
+        type: string
+    required:
+    - answer_correct_id
+    - answer_option
+    - content
+    type: object
+  model.CreateQuizInput:
+    properties:
+      name:
+        type: string
+      owner_id:
+        type: string
+      question:
+        items:
+          $ref: '#/definitions/model.CreateQuestionInput'
+        type: array
     type: object
   model.CreateUserInput:
     properties:
@@ -76,6 +114,30 @@ info:
   title: Kul API
   version: "1.0"
 paths:
+  /quizzes:
+    post:
+      consumes:
+      - application/json
+      description: create quiz
+      parameters:
+      - description: request body
+        in: body
+        name: quiz
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateQuizInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: create quiz
+      tags:
+      - quizzes
   /token/refresh:
     post:
       consumes:
@@ -122,6 +184,8 @@ paths:
             $ref: '#/definitions/model.ListUserResponse'
         "400":
           description: Bad Request
+      security:
+      - BearerAuth: []
       summary: get list user
       tags:
       - users
@@ -174,6 +238,8 @@ paths:
             $ref: '#/definitions/model.User'
         "400":
           description: Bad Request
+      security:
+      - BearerAuth: []
       summary: update user
       tags:
       - users
@@ -197,6 +263,8 @@ paths:
             $ref: '#/definitions/model.User'
         "400":
           description: Bad Request
+      security:
+      - BearerAuth: []
       summary: get user by id
       tags:
       - users
@@ -256,6 +324,8 @@ paths:
             $ref: '#/definitions/model.User'
         "401":
           description: Unauthorized
+      security:
+      - BearerAuth: []
       summary: Get access's information
       tags:
       - users

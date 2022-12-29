@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -90,7 +89,6 @@ func (s *Service) GetList(limit int64, offset int64) (*[]model.User, error) {
 func (s *Service) Get(id string) (*model.User, error) {
 	collection := db.Client.Database(db.DATABASE).Collection(db.USER_COLLECTION)
 
-	fmt.Println("id", id)
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	result := collection.FindOne(context.Background(), bson.M{"_id": objectId})
 

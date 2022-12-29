@@ -78,6 +78,7 @@ func (h *Handler) CheckExitedUser(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param limit query number false "max number of user per page"
 // @Param offset query number false "page offset"
 // @Success 200 {object} model.ListUserResponse
@@ -104,6 +105,7 @@ func (h *Handler) GetList(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "user id"
 // @Success 200 {object} model.User
 // @Failure 400
@@ -125,6 +127,7 @@ func (h *Handler) Get(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "user id"
 // @Param user body model.UpdateUserInput true "body data"
 // @Success 200 {object} model.User
@@ -182,6 +185,7 @@ func (h *Handler) Login(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Success 200 {object} model.User
 // @Failure 401
 // @Router /users/me [get]
