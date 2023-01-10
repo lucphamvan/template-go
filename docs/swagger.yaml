@@ -31,6 +31,8 @@ definitions:
         type: array
       content:
         type: string
+      owner_id:
+        type: string
     required:
     - answer_correct_id
     - answer_option
@@ -91,6 +93,8 @@ definitions:
       content:
         type: string
       id:
+        type: string
+      owner_id:
         type: string
     required:
     - answer_correct_id
@@ -168,6 +172,31 @@ paths:
       security:
       - BearerAuth: []
       summary: get list questions
+      tags:
+      - questions
+    post:
+      consumes:
+      - application/json
+      description: create question
+      parameters:
+      - description: request body
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateQuestionInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Question'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: create question
       tags:
       - questions
   /quizzes:

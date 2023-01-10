@@ -29,6 +29,7 @@ type Quiz struct {
 type Question struct {
 	Id              primitive.ObjectID   `json:"id,omitempty"  bson:"_id,omitempty"`
 	Content         string               `json:"content,omitempty" validate:"required"`
+	OwnerId         string               `json:"owner_id,omitempty" bson:"owner_id"`
 	AnswerOption    []AnswerOption       `json:"answer_option,omitempty" validate:"required" bson:"answer_option"`
 	AnswerCorrectId []primitive.ObjectID `json:"answer_correct_id,omitempty" validate:"required" bson:"answer_correct_id"`
 }
@@ -63,6 +64,7 @@ type CreateQuestionInput struct {
 	Content         string               `json:"content,omitempty" validate:"required"`
 	AnswerOption    []AnswerOption       `json:"answer_option,omitempty" validate:"required" bson:"answer_option"`
 	AnswerCorrectId []primitive.ObjectID `json:"answer_correct_id,omitempty" validate:"required" bson:"answer_correct_id"`
+	OwnerId         string               `json:"owner_id,omitempty" bson:"owner_id"`
 }
 
 type ListQuestionResponse struct {

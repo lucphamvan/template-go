@@ -53,6 +53,6 @@ func SetupRouter() *gin.Engine {
 
 	// questions
 	authRouter.GET("/questions", middleware.ValidateLimitOffset, questionHandler.GetQuestions)
-
+	authRouter.POST("/questions", questionHandler.Create)
 	return router
 }

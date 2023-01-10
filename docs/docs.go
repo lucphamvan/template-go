@@ -66,6 +66,46 @@ const docTemplate = `{
                         "description": "Bad Request"
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "create question",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "summary": "create question",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "question",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateQuestionInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Question"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
             }
         },
         "/quizzes": {
@@ -463,6 +503,9 @@ const docTemplate = `{
                 },
                 "content": {
                     "type": "string"
+                },
+                "owner_id": {
+                    "type": "string"
                 }
             }
         },
@@ -555,6 +598,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "owner_id": {
                     "type": "string"
                 }
             }
