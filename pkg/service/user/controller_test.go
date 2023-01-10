@@ -32,7 +32,7 @@ func (m *MockService) Get(id string) (*model.User, error) {
 	return nil, nil
 }
 
-func (m *MockService) GetList(limit int64, offset int64) (*[]model.User, error) {
+func (m *MockService) GetList(limit int64, offset int64) (*model.ListUserResponse, error) {
 	return nil, nil
 }
 

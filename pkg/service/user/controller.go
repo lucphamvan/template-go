@@ -88,14 +88,14 @@ func (h *Handler) GetList(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.Query("limit"))
 	offset, _ := strconv.Atoi(c.Query("offset"))
 
-	users, err := h.service.GetList(int64(limit), int64(offset))
+	data, err := h.service.GetList(int64(limit), int64(offset))
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, data)
 }
 
 // Get godoc

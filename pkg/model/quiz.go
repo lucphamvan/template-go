@@ -64,3 +64,8 @@ type CreateQuestionInput struct {
 	AnswerOption    []AnswerOption       `json:"answer_option,omitempty" validate:"required" bson:"answer_option"`
 	AnswerCorrectId []primitive.ObjectID `json:"answer_correct_id,omitempty" validate:"required" bson:"answer_correct_id"`
 }
+
+type ListQuestionResponse struct {
+	Items []Question `json:"items,omitempty"`
+	Total int64      `json:"total,omitempty"`
+}

@@ -16,7 +16,7 @@ import (
 type ServiceInterface interface {
 	Create(u model.CreateUserInput) (*model.User, error)
 	Get(id string) (*model.User, error)
-	GetList(limit int64, offset int64) (*[]model.User, error)
+	GetList(limit int64, offset int64) (*model.ListUserResponse, error)
 	Update(id string, u model.UpdateUserInput) (*model.User, error)
 	Delete(id string) error
 	IsUserExist(email string) bool
@@ -62,7 +62,7 @@ func (s *Service) Create(input model.CreateUserInput) (*model.User, error) {
 }
 
 // Get list user with pagination
-func (s *Service) GetList(limit int64, offset int64) (*[]model.User, error) {
+func (s *Service) GetList(limit int64, offset int64) (*model.ListUserResponse, error) {
 	collection := db.Client.Database(db.DATABASE).Collection(db.USER_COLLECTION)
 
 	// find option with skip, limit
@@ -81,8 +81,19 @@ func (s *Service) GetList(limit int64, offset int64) (*[]model.User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	count, err := collection.CountDocuments(context.Background(), bson.M{})
+	if err != nil {
+		return nil, err
+	}
+
+	listData := model.ListUserResponse{
+		Items: users,
+		Total: count,
+	}
+
 	// return value
-	return &users, nil
+	return &listData, nil
 }
 
 // get user by id

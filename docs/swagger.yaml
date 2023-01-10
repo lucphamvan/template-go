@@ -60,6 +60,15 @@ definitions:
     required:
     - email
     type: object
+  model.ListQuestionResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/model.Question'
+        type: array
+      total:
+        type: integer
+    type: object
   model.ListUserResponse:
     properties:
       items:
@@ -68,6 +77,25 @@ definitions:
         type: array
       total:
         type: integer
+    type: object
+  model.Question:
+    properties:
+      answer_correct_id:
+        items:
+          type: string
+        type: array
+      answer_option:
+        items:
+          $ref: '#/definitions/model.AnswerOption'
+        type: array
+      content:
+        type: string
+      id:
+        type: string
+    required:
+    - answer_correct_id
+    - answer_option
+    - content
     type: object
   model.RefreshTokenRequest:
     properties:
@@ -114,6 +142,34 @@ info:
   title: Kul API
   version: "1.0"
 paths:
+  /questions:
+    get:
+      consumes:
+      - application/json
+      description: get list questions with pagination
+      parameters:
+      - description: max number of questions per page
+        in: query
+        name: limit
+        type: number
+      - description: page offset
+        in: query
+        name: offset
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ListQuestionResponse'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: get list questions
+      tags:
+      - questions
   /quizzes:
     post:
       consumes:
