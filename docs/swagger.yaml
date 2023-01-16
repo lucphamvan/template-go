@@ -24,10 +24,12 @@ definitions:
       answer_correct_id:
         items:
           type: string
+        minItems: 1
         type: array
       answer_option:
         items:
           $ref: '#/definitions/model.AnswerOption'
+        minItems: 1
         type: array
       content:
         type: string
@@ -297,7 +299,31 @@ paths:
       summary: create user
       tags:
       - users
-  /users/:id:
+  /users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get user by id
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: get user by id
+      tags:
+      - users
     patch:
       consumes:
       - application/json
@@ -326,31 +352,6 @@ paths:
       security:
       - BearerAuth: []
       summary: update user
-      tags:
-      - users
-  /users/{id}:
-    get:
-      consumes:
-      - application/json
-      description: get user by id
-      parameters:
-      - description: user id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.User'
-        "400":
-          description: Bad Request
-      security:
-      - BearerAuth: []
-      summary: get user by id
       tags:
       - users
   /users/check:

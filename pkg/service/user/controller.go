@@ -132,7 +132,7 @@ func (h *Handler) Get(c *gin.Context) {
 // @Param user body model.UpdateUserInput true "body data"
 // @Success 200 {object} model.User
 // @Failure 400
-// @Router /users/:id [patch]
+// @Router /users/{id} [patch]
 func (h *Handler) Update(c *gin.Context) {
 	id := c.Param("id")
 	var updateUserInput model.UpdateUserInput
