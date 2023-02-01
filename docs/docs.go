@@ -108,6 +108,87 @@ const docTemplate = `{
                 }
             }
         },
+        "/questions/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "delete question",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "summary": "delete question",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "question id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "update question",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "summary": "update question",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "question id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request body",
+                        "name": "question",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateQuestionInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/quizzes": {
             "post": {
                 "security": [
@@ -504,6 +585,9 @@ const docTemplate = `{
                 "content": {
                     "type": "string"
                 },
+                "deleted": {
+                    "type": "boolean"
+                },
                 "owner_id": {
                     "type": "string"
                 }
@@ -597,6 +681,9 @@ const docTemplate = `{
                 "content": {
                     "type": "string"
                 },
+                "deleted": {
+                    "type": "boolean"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -609,6 +696,33 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateQuestionInput": {
+            "type": "object",
+            "required": [
+                "answer_correct_id",
+                "answer_option",
+                "content"
+            ],
+            "properties": {
+                "answer_correct_id": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "answer_option": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/model.AnswerOption"
+                    }
+                },
+                "content": {
                     "type": "string"
                 }
             }

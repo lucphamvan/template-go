@@ -33,6 +33,8 @@ definitions:
         type: array
       content:
         type: string
+      deleted:
+        type: boolean
       owner_id:
         type: string
     required:
@@ -94,6 +96,8 @@ definitions:
         type: array
       content:
         type: string
+      deleted:
+        type: boolean
       id:
         type: string
       owner_id:
@@ -107,6 +111,25 @@ definitions:
     properties:
       token:
         type: string
+    type: object
+  model.UpdateQuestionInput:
+    properties:
+      answer_correct_id:
+        items:
+          type: string
+        minItems: 1
+        type: array
+      answer_option:
+        items:
+          $ref: '#/definitions/model.AnswerOption'
+        minItems: 1
+        type: array
+      content:
+        type: string
+    required:
+    - answer_correct_id
+    - answer_option
+    - content
     type: object
   model.UpdateUserInput:
     properties:
@@ -199,6 +222,57 @@ paths:
       security:
       - BearerAuth: []
       summary: create question
+      tags:
+      - questions
+  /questions/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete question
+      parameters:
+      - description: question id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: delete question
+      tags:
+      - questions
+    patch:
+      consumes:
+      - application/json
+      description: update question
+      parameters:
+      - description: question id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: request body
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateQuestionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: update question
       tags:
       - questions
   /quizzes:
