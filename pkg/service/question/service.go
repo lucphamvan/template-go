@@ -21,6 +21,7 @@ type IService interface {
 type Service struct {
 }
 
+// get list question
 func (s *Service) GetList(limit, offset int64, ownerId string) (*model.ListQuestionResponse, error) {
 	collection := db.Client.Database(db.DATABASE).Collection(db.QUESTION_COLLECTION)
 
@@ -63,11 +64,12 @@ func (s *Service) Create(createQuestionInput model.CreateQuestionInput) (*model.
 	}
 	id, _ := result.InsertedID.(primitive.ObjectID)
 	question := model.Question{
-		Id:              id,
-		Content:         createQuestionInput.Content,
-		OwnerId:         createQuestionInput.OwnerId,
-		AnswerOption:    createQuestionInput.AnswerOption,
-		AnswerCorrectId: createQuestionInput.AnswerCorrectId,
+		Id:               id,
+		Content:          createQuestionInput.Content,
+		OwnerId:          createQuestionInput.OwnerId,
+		Choices:          createQuestionInput.Choices,
+		CorrectChoiceIds: createQuestionInput.CorrectChoiceIds,
+		Deleted:          createQuestionInput.Deleted,
 	}
 	return &question, nil
 }
@@ -107,9 +109,9 @@ func (s *Service) Update(id string, updateQuestionInput model.UpdateQuestionInpu
 	filter := bson.M{"_id": objectId, "owner_id": userId}
 	_, err := collection.UpdateOne(context.Background(), filter, bson.M{
 		"$set": bson.M{
-			"content":           updateQuestionInput.Content,
-			"answer_option":     updateQuestionInput.AnswerOption,
-			"answer_correct_id": updateQuestionInput.AnswerCorrectId,
+			"content":            updateQuestionInput.Content,
+			"choices":            updateQuestionInput.Choices,
+			"correct_choice_ids": updateQuestionInput.CorrectChoiceIds,
 		},
 	})
 

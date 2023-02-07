@@ -49,7 +49,7 @@ func SetupRouter() *gin.Engine {
 	authRouter.PATCH("/users/:id", userHandler.Update)
 
 	// quiz
-	authRouter.POST("/quizzes", quizHandler.CreateQuiz)
+	authRouter.POST("/quizzes", quizHandler.CreateQuizzes)
 
 	// questions
 	authRouter.GET("/questions", middleware.ValidateLimitOffset, questionHandler.GetQuestions)

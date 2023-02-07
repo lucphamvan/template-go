@@ -196,7 +196,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "create quiz",
+                "description": "create quizzes",
                 "consumes": [
                     "application/json"
                 ],
@@ -206,7 +206,7 @@ const docTemplate = `{
                 "tags": [
                     "quizzes"
                 ],
-                "summary": "create quiz",
+                "summary": "create quizzes",
                 "parameters": [
                     {
                         "description": "request body",
@@ -214,13 +214,16 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateQuizInput"
+                            "$ref": "#/definitions/model.CreateQuizzesInput"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Quizzes"
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -531,21 +534,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.AnswerOption": {
-            "type": "object",
-            "required": [
-                "content",
-                "id"
-            ],
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
         "model.AuthenResponse": {
             "type": "object",
             "properties": {
@@ -560,30 +548,45 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Choice": {
+            "type": "object",
+            "required": [
+                "content",
+                "id"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "model.CreateQuestionInput": {
             "type": "object",
             "required": [
-                "answer_correct_id",
-                "answer_option",
-                "content"
+                "choices",
+                "content",
+                "correct_choice_ids"
             ],
             "properties": {
-                "answer_correct_id": {
+                "choices": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/model.Choice"
+                    }
+                },
+                "content": {
+                    "type": "string"
+                },
+                "correct_choice_ids": {
                     "type": "array",
                     "minItems": 1,
                     "items": {
                         "type": "string"
                     }
-                },
-                "answer_option": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                        "$ref": "#/definitions/model.AnswerOption"
-                    }
-                },
-                "content": {
-                    "type": "string"
                 },
                 "deleted": {
                     "type": "boolean"
@@ -593,8 +596,13 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CreateQuizInput": {
+        "model.CreateQuizzesInput": {
             "type": "object",
+            "required": [
+                "name",
+                "owner_id",
+                "questions"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -602,8 +610,9 @@ const docTemplate = `{
                 "owner_id": {
                     "type": "string"
                 },
-                "question": {
+                "questions": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
                         "$ref": "#/definitions/model.CreateQuestionInput"
                     }
@@ -661,25 +670,30 @@ const docTemplate = `{
         "model.Question": {
             "type": "object",
             "required": [
-                "answer_correct_id",
-                "answer_option",
-                "content"
+                "choices",
+                "content",
+                "correct_choice_ids"
             ],
             "properties": {
-                "answer_correct_id": {
+                "choices": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
-                        "type": "string"
-                    }
-                },
-                "answer_option": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.AnswerOption"
+                        "$ref": "#/definitions/model.Choice"
                     }
                 },
                 "content": {
                     "type": "string"
+                },
+                "correct_choice_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "created_at": {
+                    "type": "number"
                 },
                 "deleted": {
                     "type": "boolean"
@@ -689,6 +703,50 @@ const docTemplate = `{
                 },
                 "owner_id": {
                     "type": "string"
+                }
+            }
+        },
+        "model.Quizzes": {
+            "type": "object",
+            "properties": {
+                "allowed_emails": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "number"
+                },
+                "deleted": {
+                    "type": "boolean"
+                },
+                "duration": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner_id": {
+                    "type": "string"
+                },
+                "question_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "start_time": {
+                    "type": "number"
                 }
             }
         },
@@ -703,27 +761,27 @@ const docTemplate = `{
         "model.UpdateQuestionInput": {
             "type": "object",
             "required": [
-                "answer_correct_id",
-                "answer_option",
-                "content"
+                "choices",
+                "content",
+                "correct_choice_ids"
             ],
             "properties": {
-                "answer_correct_id": {
+                "choices": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/model.Choice"
+                    }
+                },
+                "content": {
+                    "type": "string"
+                },
+                "correct_choice_ids": {
                     "type": "array",
                     "minItems": 1,
                     "items": {
                         "type": "string"
                     }
-                },
-                "answer_option": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                        "$ref": "#/definitions/model.AnswerOption"
-                    }
-                },
-                "content": {
-                    "type": "string"
                 }
             }
         },

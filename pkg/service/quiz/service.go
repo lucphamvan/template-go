@@ -37,28 +37,29 @@ func (s *Service) createQuestions(questions []model.CreateQuestionInput) (*[]str
 	return &questionIds, nil
 }
 
-func (s *Service) CreateQuiz(inputQuiz model.CreateQuizInput) error {
+func (s *Service) CreateQuizzes(inputQuiz model.CreateQuizzesInput) (*model.Quizzes, error) {
 	// collection
 	collection := db.Client.Database(db.DATABASE).Collection(db.QUIZ_COLLECTION)
 
 	// create list questions
-	questionIds, err := s.createQuestions(inputQuiz.Question)
+	questionIds, err := s.createQuestions(inputQuiz.Questions)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// create quiz
-	quiz := model.Quiz{
+	quiz := model.Quizzes{
 		Name:       inputQuiz.Name,
 		OwnerId:    inputQuiz.OwnerId,
 		QuestionId: *questionIds,
 	}
-	_, err = collection.InsertOne(context.Background(), quiz)
+	result, err := collection.InsertOne(context.Background(), quiz)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	quiz.Id = result.InsertedID.(primitive.ObjectID)
+	return &quiz, nil
 }
 
 var ServiceInstance = new(Service)

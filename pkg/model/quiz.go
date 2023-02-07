@@ -4,75 +4,73 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Contest struct {
-	Id         primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
-	OwnerId    string             `json:"owner_id,omitempty" bson:"owner_id"`
-	Name       string             `json:"name,omitempty" bson:"name"`
-	Code       string             `json:"code,omitempty" bson:"code"`
-	AllowEmail []string           `json:"allow_email,omitempty" bson:"allow_email"`
+// test
+type Quizzes struct {
+	Id            primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	OwnerId       string             `json:"owner_id,omitempty" bson:"owner_id"`
+	Name          string             `json:"name,omitempty" bson:"name"`
+	Code          string             `json:"code,omitempty" bson:"code"`
+	AllowedEmails []string           `json:"allowed_emails,omitempty" bson:"allowed_emails"`
+	QuestionId    []string           `json:"question_id,omitempty" bson:"question_id"`
 
+	Deleted   bool    `json:"deleted,omitempty"`
 	StartTime float64 `json:"start_time,omitempty" bson:"start_time"`
 	EndTime   float64 `json:"end_time,omitempty" bson:"end_time"`
 	Duration  int     `json:"duration,omitempty" bson:"duration"`
 
-	CreateAt float64 `json:"create_at,omitempty"`
+	CreatedAt float64 `json:"created_at,omitempty"`
 }
 
-type Quiz struct {
-	Id         primitive.ObjectID `json:"id,omitempty"  bson:"_id,omitempty"`
-	Name       string             `json:"name,omitempty"`
-	OwnerId    string             `json:"owner_id,omitempty" bson:"owner_id"`
-	QuestionId []string           `json:"question_id,omitempty" bson:"question_id"`
-}
-
-// struct for Question
-type Question struct {
-	Id              primitive.ObjectID   `json:"id,omitempty" bson:"_id,omitempty"`
-	Content         string               `json:"content,omitempty" validate:"required"`
-	OwnerId         string               `json:"owner_id,omitempty" bson:"owner_id"`
-	AnswerOption    []AnswerOption       `json:"answer_option,omitempty" validate:"required" bson:"answer_option"`
-	AnswerCorrectId []primitive.ObjectID `json:"answer_correct_id,omitempty" validate:"required" bson:"answer_correct_id"`
-	Deleted         bool                 `json:"deleted,omitempty"`
-}
-
-// struct for Question Option Answer
-type AnswerOption struct {
+// option answer for a question
+type Choice struct {
 	Id      primitive.ObjectID `json:"id,omitempty" validate:"required"`
 	Content string             `json:"content,omitempty" validate:"required"`
 }
 
-type QuizAnswer struct {
-	Id             primitive.ObjectID `json:"id,omitempty"  bson:"_id,omitempty"`
-	QuizId         string             `json:"quiz_id,omitempty" bson:"quiz_id"`
-	OwnerId        string             `json:"owner_id,omitempty" bson:"owner_id"`
-	ContestId      string             `json:"contest_id,omitempty" bson:"contest_id"`
-	QuestionAnswer []QuestionAnswer   `json:"question_answer,omitempty" bson:"question_answer"`
+// question
+type Question struct {
+	Id               primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	Content          string             `json:"content,omitempty" validate:"required"`
+	OwnerId          string             `json:"owner_id,omitempty" bson:"owner_id"`
+	Choices          []Choice           `json:"choices,omitempty" bson:"choices" validate:"required,min=1"`
+	CorrectChoiceIds []string           `json:"correct_choice_ids,omitempty" bson:"correct_choice_ids" validate:"required,min=1"`
+	Deleted          bool               `json:"deleted,omitempty"`
+
+	CreatedAt float64 `json:"created_at,omitempty"`
+}
+
+type QuizzesAnswer struct {
+	Id              primitive.ObjectID `json:"id,omitempty"  bson:"_id,omitempty"`
+	QuizzesId       string             `json:"quizzes_id,omitempty" bson:"quizzes_id"`
+	UserId          string             `json:"user_id,omitempty" bson:"user_id"`
+	QuestionAnswers []QuestionAnswer   `json:"question_answers,omitempty" bson:"question_answers"`
 }
 
 // struct for Question Answer
 type QuestionAnswer struct {
-	Question        Question             `json:"question,omitempty"`
-	AnswerCorrectId []primitive.ObjectID `json:"answer_correct_id,omitempty" bson:"answer_correct_id"`
+	QuestionId       string   `json:"question_id,omitempty" bson:"question_id"`
+	CorrectChoiceIds []string `json:"correct_choice_ids,omitempty" bson:"correct_choice_ids"`
 }
 
-type CreateQuizInput struct {
-	Name     string                `json:"name,omitempty"`
-	OwnerId  string                `json:"owner_id,omitempty" bson:"owner_id"`
-	Question []CreateQuestionInput `json:"question,omitempty" bson:"question"`
+// struct for Request and Response
+type CreateQuizzesInput struct {
+	Name      string                `json:"name,omitempty" validate:"required"`
+	OwnerId   string                `json:"owner_id,omitempty" bson:"owner_id" validate:"required"`
+	Questions []CreateQuestionInput `json:"questions,omitempty" bson:"questions" validate:"required,min=1"`
 }
 
 type CreateQuestionInput struct {
-	Content         string               `json:"content,omitempty" validate:"required"`
-	AnswerOption    []AnswerOption       `json:"answer_option,omitempty" validate:"required,min=1" bson:"answer_option"`
-	AnswerCorrectId []primitive.ObjectID `json:"answer_correct_id,omitempty" validate:"required,min=1" bson:"answer_correct_id"`
-	OwnerId         string               `json:"owner_id,omitempty" bson:"owner_id"`
-	Deleted         bool                 `json:"deleted,omitempty"`
+	Content          string   `json:"content,omitempty" validate:"required"`
+	Choices          []Choice `json:"choices,omitempty" validate:"required,min=1" bson:"choices"`
+	CorrectChoiceIds []string `json:"correct_choice_ids,omitempty" validate:"required,min=1" bson:"correct_choice_ids"`
+	OwnerId          string   `json:"owner_id,omitempty" bson:"owner_id"`
+	Deleted          bool     `json:"deleted,omitempty"`
 }
 
 type UpdateQuestionInput struct {
-	Content         string               `json:"content,omitempty" validate:"required"`
-	AnswerOption    []AnswerOption       `json:"answer_option,omitempty" validate:"required,min=1" bson:"answer_option"`
-	AnswerCorrectId []primitive.ObjectID `json:"answer_correct_id,omitempty" validate:"required,min=1" bson:"answer_correct_id"`
+	Content          string   `json:"content,omitempty" validate:"required"`
+	Choices          []Choice `json:"choices,omitempty" validate:"required,min=1" bson:"choices"`
+	CorrectChoiceIds []string `json:"correct_choice_ids,omitempty" validate:"required,min=1" bson:"correct_choice_ids"`
 }
 
 type ListQuestionResponse struct {

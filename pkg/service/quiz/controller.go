@@ -18,33 +18,33 @@ func NewHanlder(service Service) *Handler {
 	}
 }
 
-// CreateQuiz godoc
-// @Summary create quiz
+// CreateQuizzes godoc
+// @Summary create quizzes
 // @Schemes
-// @Description create quiz
+// @Description create quizzes
 // @Tags quizzes
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param quiz body model.CreateQuizInput true "request body"
-// @Success 200
+// @Param quiz body model.CreateQuizzesInput true "request body"
+// @Success 200 {object} model.Quizzes
 // @Failure 400
 // @Router /quizzes [post]
-func (h *Handler) CreateQuiz(c *gin.Context) {
-	var createQuizInput model.CreateQuizInput
-	err := common.ValidateBodyData(c, &createQuizInput)
+func (h *Handler) CreateQuizzes(c *gin.Context) {
+	var createQuizzesInput model.CreateQuizzesInput
+	err := common.ValidateBodyData(c, &createQuizzesInput)
 	// user id to createQuizInput
-	createQuizInput.OwnerId = c.Request.Header.Get(common.USER_ID_HEADER)
+	createQuizzesInput.OwnerId = c.Request.Header.Get(common.USER_ID_HEADER)
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
 		return
 	}
-	err = h.Service.CreateQuiz(createQuizInput)
+	quizzes, err := h.Service.CreateQuizzes(createQuizzesInput)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": true})
+	c.JSON(http.StatusOK, quizzes)
 }

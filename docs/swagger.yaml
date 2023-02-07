@@ -1,15 +1,5 @@
 basePath: /
 definitions:
-  model.AnswerOption:
-    properties:
-      content:
-        type: string
-      id:
-        type: string
-    required:
-    - content
-    - id
-    type: object
   model.AuthenResponse:
     properties:
       access_token:
@@ -19,39 +9,54 @@ definitions:
       user:
         $ref: '#/definitions/model.User'
     type: object
+  model.Choice:
+    properties:
+      content:
+        type: string
+      id:
+        type: string
+    required:
+    - content
+    - id
+    type: object
   model.CreateQuestionInput:
     properties:
-      answer_correct_id:
+      choices:
         items:
-          type: string
-        minItems: 1
-        type: array
-      answer_option:
-        items:
-          $ref: '#/definitions/model.AnswerOption'
+          $ref: '#/definitions/model.Choice'
         minItems: 1
         type: array
       content:
         type: string
+      correct_choice_ids:
+        items:
+          type: string
+        minItems: 1
+        type: array
       deleted:
         type: boolean
       owner_id:
         type: string
     required:
-    - answer_correct_id
-    - answer_option
+    - choices
     - content
+    - correct_choice_ids
     type: object
-  model.CreateQuizInput:
+  model.CreateQuizzesInput:
     properties:
       name:
         type: string
       owner_id:
         type: string
-      question:
+      questions:
         items:
           $ref: '#/definitions/model.CreateQuestionInput'
+        minItems: 1
         type: array
+    required:
+    - name
+    - owner_id
+    - questions
     type: object
   model.CreateUserInput:
     properties:
@@ -86,16 +91,20 @@ definitions:
     type: object
   model.Question:
     properties:
-      answer_correct_id:
+      choices:
         items:
-          type: string
-        type: array
-      answer_option:
-        items:
-          $ref: '#/definitions/model.AnswerOption'
+          $ref: '#/definitions/model.Choice'
+        minItems: 1
         type: array
       content:
         type: string
+      correct_choice_ids:
+        items:
+          type: string
+        minItems: 1
+        type: array
+      created_at:
+        type: number
       deleted:
         type: boolean
       id:
@@ -103,9 +112,38 @@ definitions:
       owner_id:
         type: string
     required:
-    - answer_correct_id
-    - answer_option
+    - choices
     - content
+    - correct_choice_ids
+    type: object
+  model.Quizzes:
+    properties:
+      allowed_emails:
+        items:
+          type: string
+        type: array
+      code:
+        type: string
+      created_at:
+        type: number
+      deleted:
+        type: boolean
+      duration:
+        type: integer
+      end_time:
+        type: number
+      id:
+        type: string
+      name:
+        type: string
+      owner_id:
+        type: string
+      question_id:
+        items:
+          type: string
+        type: array
+      start_time:
+        type: number
     type: object
   model.RefreshTokenRequest:
     properties:
@@ -114,22 +152,22 @@ definitions:
     type: object
   model.UpdateQuestionInput:
     properties:
-      answer_correct_id:
+      choices:
         items:
-          type: string
-        minItems: 1
-        type: array
-      answer_option:
-        items:
-          $ref: '#/definitions/model.AnswerOption'
+          $ref: '#/definitions/model.Choice'
         minItems: 1
         type: array
       content:
         type: string
+      correct_choice_ids:
+        items:
+          type: string
+        minItems: 1
+        type: array
     required:
-    - answer_correct_id
-    - answer_option
+    - choices
     - content
+    - correct_choice_ids
     type: object
   model.UpdateUserInput:
     properties:
@@ -279,24 +317,26 @@ paths:
     post:
       consumes:
       - application/json
-      description: create quiz
+      description: create quizzes
       parameters:
       - description: request body
         in: body
         name: quiz
         required: true
         schema:
-          $ref: '#/definitions/model.CreateQuizInput'
+          $ref: '#/definitions/model.CreateQuizzesInput'
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/model.Quizzes'
         "400":
           description: Bad Request
       security:
       - BearerAuth: []
-      summary: create quiz
+      summary: create quizzes
       tags:
       - quizzes
   /token/refresh:
