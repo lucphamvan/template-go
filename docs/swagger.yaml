@@ -64,6 +64,15 @@ definitions:
     required:
     - email
     type: object
+  model.GetListQuizzesResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/model.Quiz'
+        type: array
+      total:
+        type: integer
+    type: object
   model.ListQuestionResponse:
     properties:
       items:
@@ -319,6 +328,33 @@ paths:
       tags:
       - questions
   /quizzes:
+    get:
+      consumes:
+      - application/json
+      description: get quizzes
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetListQuizzesResponse'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: get quizzes
+      tags:
+      - quizzes
     post:
       consumes:
       - application/json
@@ -344,7 +380,7 @@ paths:
       summary: create quiz
       tags:
       - quizzes
-  /quizzes/{id}/add-question:
+  /quizzes/{id}/insert-question:
     patch:
       consumes:
       - application/json

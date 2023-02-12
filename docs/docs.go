@@ -190,6 +190,49 @@ const docTemplate = `{
             }
         },
         "/quizzes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get quizzes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "get quizzes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetListQuizzesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -231,7 +274,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/quizzes/{id}/add-question": {
+        "/quizzes/{id}/insert-question": {
             "patch": {
                 "security": [
                     {
@@ -723,6 +766,20 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "model.GetListQuizzesResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Quiz"
+                    }
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

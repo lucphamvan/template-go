@@ -2,6 +2,7 @@ package quiz
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"tchh.lucpham/pkg/common"
@@ -62,7 +63,7 @@ func (h *Handler) CreateQuiz(c *gin.Context) {
 // @Param question body model.CreateQuestionInput true "request body"
 // @Success 200 {object} model.Quiz
 // @Failure 400
-// @Router /quizzes/{id}/add-question [patch]
+// @Router /quizzes/{id}/insert-question [patch]
 func (h *Handler) InsertQuestion(c *gin.Context) {
 	// validate request body
 	var createQuestionInput model.CreateQuestionInput
@@ -113,4 +114,32 @@ func (h *Handler) RemoveQuestion(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, quiz)
+}
+
+// GetQuiz godoc
+// @Summary get quizzes
+// @Schemes
+// @Description get quizzes
+// @Tags quizzes
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param limit query string false "limit"
+// @Param offset query string false "offset"
+// @Success 200 {object} model.GetListQuizzesResponse
+// @Failure 400
+// @Router /quizzes [get]
+func (h *Handler) GetQuizzes(c *gin.Context) {
+	// owner id
+	ownerId := c.Request.Header.Get(common.USER_ID_HEADER)
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	offset, _ := strconv.Atoi(c.Query("offset"))
+
+	// get quizzes
+	data, err := h.service.GetQuizzes(ownerId, int64(limit), int64(offset))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, data)
 }

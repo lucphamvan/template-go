@@ -14,14 +14,14 @@ type Quiz struct {
 	QuestionIds []string    `json:"question_ids,omitempty" bson:"question_ids"`
 	Setting     QuizSetting `json:"setting,omitempty" bson:"setting"`
 
-	CreatedAt float64 `json:"created_at,omitempty"`
-	Deleted   bool    `json:"deleted,omitempty"`
+	CreatedAt float64 `json:"created_at,omitempty" bson:"created_at"`
+	Deleted   bool    `json:"deleted,omitempty" `
 }
 
 type QuizSetting struct {
 	Name          string   `json:"name,omitempty" bson:"name" validate:"required"`
 	StartTime     float64  `json:"start_time,omitempty" bson:"start_time" validate:"required"`
-	EndTime       float64  `json:"end_time,omitempty" bson:"end_time" validate:"required"`
+	EndTime       float64  `json:"end_time,omitempty" bson:"end_time" validate:"required,gtefield=StartTime"`
 	Duration      int      `json:"duration,omitempty" bson:"duration" validate:"required"`
 	AllowedEmails []string `json:"allowed_emails,omitempty" bson:"allowed_emails"`
 }
@@ -45,4 +45,9 @@ type InsertQuestionInput struct {
 
 type RemoveQuestionInput struct {
 	QuestionId string `json:"question_id,omitempty" bson:"question_id"`
+}
+
+type GetListQuizzesResponse struct {
+	Items []Quiz `json:"items,omitempty"`
+	Total int64  `json:"total,omitempty"`
 }

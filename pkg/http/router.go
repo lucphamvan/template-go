@@ -50,8 +50,9 @@ func SetupRouter() *gin.Engine {
 
 	// quiz
 	authRouter.POST("/quizzes", quizHandler.CreateQuiz)
-	authRouter.PATCH("/quizzes/:id/questions", quizHandler.InsertQuestion)
-	authRouter.PATCH("/quizzes/:id/questions/:questionId", quizHandler.RemoveQuestion)
+	authRouter.PATCH("/quizzes/:id/insert-question", quizHandler.InsertQuestion)
+	authRouter.PATCH("/quizzes/:id/remove-question/:questionId", quizHandler.RemoveQuestion)
+	authRouter.GET("/quizzes", middleware.ValidateLimitOffset, quizHandler.GetQuizzes)
 
 	// questions
 	authRouter.GET("/questions", middleware.ValidateLimitOffset, questionHandler.GetQuestions)

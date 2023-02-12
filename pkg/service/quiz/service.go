@@ -6,6 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"tchh.lucpham/pkg/db"
 	"tchh.lucpham/pkg/model"
 )
@@ -45,8 +46,10 @@ func (s *Service) CreateQuiz(inputQuiz model.CreateQuizInput) (*model.Quiz, erro
 
 	// create quiz
 	quiz := model.Quiz{
-		OwnerId: inputQuiz.OwnerId,
-		Setting: inputQuiz.Setting,
+		OwnerId:   inputQuiz.OwnerId,
+		Setting:   inputQuiz.Setting,
+		Deleted:   false,
+		CreatedAt: float64(time.Now().UnixMilli()),
 	}
 	result, err := collection.InsertOne(context.Background(), quiz)
 	if err != nil {
@@ -70,7 +73,16 @@ func (s *Service) CreateAndInsertQuestionToQuiz(quizId string, question model.Cr
 	// update quiz
 	objectId, _ := primitive.ObjectIDFromHex(quizId)
 	filter := bson.M{"_id": objectId, "owner_id": question.OwnerId}
-	update := bson.M{"$push": bson.M{"questions": questionId}}
+
+	// write condition $ifNull
+	condition := bson.M{"$ifNull": bson.A{
+		bson.M{"$concatArrays": bson.A{"$question_ids", bson.A{questionId}}},
+		bson.A{questionId},
+	}}
+	// aggressive update, need wrap it in array
+	update := bson.A{
+		bson.M{"$set": bson.M{"question_ids": condition}},
+	}
 	_, err = collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		return nil, err
@@ -96,7 +108,8 @@ func (s *Service) RemoveQuestionFromQuiz(quizId string, questionId string, owner
 	// update quiz
 	objectId, _ := primitive.ObjectIDFromHex(quizId)
 	filter := bson.M{"_id": objectId, "owner_id": ownerId}
-	update := bson.M{"$pull": bson.M{"questions": questionId}}
+	update := bson.M{"$pull": bson.M{"question_ids": questionId}}
+
 	_, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		return nil, err
@@ -112,6 +125,41 @@ func (s *Service) RemoveQuestionFromQuiz(quizId string, questionId string, owner
 
 	// return quiz
 	return quiz, nil
+}
+
+// get list quiz
+func (s *Service) GetQuizzes(ownerId string, limit int64, offset int64) (*model.GetListQuizzesResponse, error) {
+	// collection
+	collection := db.Client.Database(db.DATABASE).Collection(db.QUIZ_COLLECTION)
+	// filter
+	filter := bson.M{"owner_id": ownerId, "deleted": false}
+	// options
+	options := options.Find().SetSkip(limit * offset).SetLimit(limit)
+	// find quiz
+	cursor, err := collection.Find(context.Background(), filter, options)
+	if err != nil {
+		return nil, err
+	}
+	// decode quiz
+	var quizzes []model.Quiz
+	err = cursor.All(context.Background(), &quizzes)
+	if err != nil {
+		return nil, err
+	}
+	// count quiz
+	count, err := collection.CountDocuments(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+
+	// data
+	data := model.GetListQuizzesResponse{
+		Total: count,
+		Items: quizzes,
+	}
+
+	// return data
+	return &data, nil
 }
 
 var ServiceInstance = new(Service)
