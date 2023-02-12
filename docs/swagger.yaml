@@ -42,21 +42,14 @@ definitions:
     - content
     - correct_choice_ids
     type: object
-  model.CreateQuizzesInput:
+  model.CreateQuizInput:
     properties:
-      name:
-        type: string
       owner_id:
         type: string
-      questions:
-        items:
-          $ref: '#/definitions/model.CreateQuestionInput'
-        minItems: 1
-        type: array
+      setting:
+        $ref: '#/definitions/model.QuizSetting'
     required:
-    - name
-    - owner_id
-    - questions
+    - setting
     type: object
   model.CreateUserInput:
     properties:
@@ -116,34 +109,46 @@ definitions:
     - content
     - correct_choice_ids
     type: object
-  model.Quizzes:
+  model.Quiz:
     properties:
-      allowed_emails:
-        items:
-          type: string
-        type: array
       code:
         type: string
       created_at:
         type: number
       deleted:
         type: boolean
+      id:
+        type: string
+      is_publish:
+        type: boolean
+      owner_id:
+        type: string
+      question_ids:
+        items:
+          type: string
+        type: array
+      setting:
+        $ref: '#/definitions/model.QuizSetting'
+    type: object
+  model.QuizSetting:
+    properties:
+      allowed_emails:
+        items:
+          type: string
+        type: array
       duration:
         type: integer
       end_time:
         type: number
-      id:
-        type: string
       name:
         type: string
-      owner_id:
-        type: string
-      question_id:
-        items:
-          type: string
-        type: array
       start_time:
         type: number
+    required:
+    - duration
+    - end_time
+    - name
+    - start_time
     type: object
   model.RefreshTokenRequest:
     properties:
@@ -317,26 +322,87 @@ paths:
     post:
       consumes:
       - application/json
-      description: create quizzes
+      description: create quiz
       parameters:
       - description: request body
         in: body
         name: quiz
         required: true
         schema:
-          $ref: '#/definitions/model.CreateQuizzesInput'
+          $ref: '#/definitions/model.CreateQuizInput'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Quizzes'
+            $ref: '#/definitions/model.Quiz'
         "400":
           description: Bad Request
       security:
       - BearerAuth: []
-      summary: create quizzes
+      summary: create quiz
+      tags:
+      - quizzes
+  /quizzes/{id}/add-question:
+    patch:
+      consumes:
+      - application/json
+      description: create and insert question to quiz
+      parameters:
+      - description: quiz id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: request body
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateQuestionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Quiz'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: create and insert question to quiz
+      tags:
+      - quizzes
+  /quizzes/{id}/remove-question/{questionId}:
+    patch:
+      consumes:
+      - application/json
+      description: remove question from quiz
+      parameters:
+      - description: quiz id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: question id
+        in: path
+        name: questionId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Quiz'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: remove question from quiz
       tags:
       - quizzes
   /token/refresh:

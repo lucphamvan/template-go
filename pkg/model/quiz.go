@@ -4,21 +4,21 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Quizzes struct
-type Quizzes struct {
+// Quiz struct
+type Quiz struct {
 	Id        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	OwnerId   string             `json:"owner_id,omitempty" bson:"owner_id"`
 	Code      string             `json:"code,omitempty" bson:"code"`
 	IsPublish bool               `json:"is_publish,omitempty" bson:"is_publish"`
 
-	QuestionId []string       `json:"question_id,omitempty" bson:"question_id"`
-	Setting    QuizzesSetting `json:"setting,omitempty" bson:"setting"`
+	QuestionIds []string    `json:"question_ids,omitempty" bson:"question_ids"`
+	Setting     QuizSetting `json:"setting,omitempty" bson:"setting"`
 
 	CreatedAt float64 `json:"created_at,omitempty"`
 	Deleted   bool    `json:"deleted,omitempty"`
 }
 
-type QuizzesSetting struct {
+type QuizSetting struct {
 	Name          string   `json:"name,omitempty" bson:"name" validate:"required"`
 	StartTime     float64  `json:"start_time,omitempty" bson:"start_time" validate:"required"`
 	EndTime       float64  `json:"end_time,omitempty" bson:"end_time" validate:"required"`
@@ -26,17 +26,17 @@ type QuizzesSetting struct {
 	AllowedEmails []string `json:"allowed_emails,omitempty" bson:"allowed_emails"`
 }
 
-type QuizzesAnswer struct {
+type QuizAnswer struct {
 	Id              primitive.ObjectID `json:"id,omitempty"  bson:"_id,omitempty"`
-	QuizzesId       string             `json:"quizzes_id,omitempty" bson:"quizzes_id"`
+	QuizId          string             `json:"quiz_id,omitempty" bson:"quiz_id"`
 	UserId          string             `json:"user_id,omitempty" bson:"user_id"`
 	QuestionAnswers []QuestionAnswer   `json:"question_answers,omitempty" bson:"question_answers"`
 }
 
 // struct for Request and Response
-type CreateQuizzesInput struct {
-	Setting QuizzesSetting `json:"setting,omitempty" bson:"setting" validate:"required"`
-	OwnerId string         `json:"owner_id,omitempty" bson:"owner_id"`
+type CreateQuizInput struct {
+	Setting QuizSetting `json:"setting,omitempty" bson:"setting" validate:"required"`
+	OwnerId string      `json:"owner_id,omitempty" bson:"owner_id"`
 }
 
 type InsertQuestionInput struct {

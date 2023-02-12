@@ -196,7 +196,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "create quizzes",
+                "description": "create quiz",
                 "consumes": [
                     "application/json"
                 ],
@@ -206,7 +206,7 @@ const docTemplate = `{
                 "tags": [
                     "quizzes"
                 ],
-                "summary": "create quizzes",
+                "summary": "create quiz",
                 "parameters": [
                     {
                         "description": "request body",
@@ -214,7 +214,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateQuizzesInput"
+                            "$ref": "#/definitions/model.CreateQuizInput"
                         }
                     }
                 ],
@@ -222,7 +222,103 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Quizzes"
+                            "$ref": "#/definitions/model.Quiz"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/quizzes/{id}/add-question": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "create and insert question to quiz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "create and insert question to quiz",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "quiz id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request body",
+                        "name": "question",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateQuestionInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Quiz"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/quizzes/{id}/remove-question/{questionId}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "remove question from quiz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "remove question from quiz",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "quiz id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "question id",
+                        "name": "questionId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Quiz"
                         }
                     },
                     "400": {
@@ -596,26 +692,17 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CreateQuizzesInput": {
+        "model.CreateQuizInput": {
             "type": "object",
             "required": [
-                "name",
-                "owner_id",
-                "questions"
+                "setting"
             ],
             "properties": {
-                "name": {
-                    "type": "string"
-                },
                 "owner_id": {
                     "type": "string"
                 },
-                "questions": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                        "$ref": "#/definitions/model.CreateQuestionInput"
-                    }
+                "setting": {
+                    "$ref": "#/definitions/model.QuizSetting"
                 }
             }
         },
@@ -706,15 +793,9 @@ const docTemplate = `{
                 }
             }
         },
-        "model.Quizzes": {
+        "model.Quiz": {
             "type": "object",
             "properties": {
-                "allowed_emails": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "code": {
                     "type": "string"
                 },
@@ -724,26 +805,49 @@ const docTemplate = `{
                 "deleted": {
                     "type": "boolean"
                 },
+                "id": {
+                    "type": "string"
+                },
+                "is_publish": {
+                    "type": "boolean"
+                },
+                "owner_id": {
+                    "type": "string"
+                },
+                "question_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "setting": {
+                    "$ref": "#/definitions/model.QuizSetting"
+                }
+            }
+        },
+        "model.QuizSetting": {
+            "type": "object",
+            "required": [
+                "duration",
+                "end_time",
+                "name",
+                "start_time"
+            ],
+            "properties": {
+                "allowed_emails": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "duration": {
                     "type": "integer"
                 },
                 "end_time": {
                     "type": "number"
                 },
-                "id": {
-                    "type": "string"
-                },
                 "name": {
                     "type": "string"
-                },
-                "owner_id": {
-                    "type": "string"
-                },
-                "question_id": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 },
                 "start_time": {
                     "type": "number"
