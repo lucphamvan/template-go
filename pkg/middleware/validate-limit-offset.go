@@ -13,15 +13,15 @@ func ValidateLimitOffset(c *gin.Context) {
 	limitStr := c.Query("limit")
 	offsetStr := c.Query("offset")
 
-	// return error if co-exist or not
+	// return error if one of limit/offset is empty and another is not
 	if (limitStr != "" && offsetStr == "") || (limitStr == "" && offsetStr != "") {
 		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: common.ERROR_REQUIRE_LIMIT_OFFSET})
 		return
 	}
 
-	// return error if limit/offset is not number
+	// return error if limit/offset is not empty and not number
 	if limitStr != "" && offsetStr != "" {
-		// limit must different 0
+		// return error if limit is 0
 		if limitStr == "0" {
 			c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: common.ERROR_QUERY_LIMIT_ZERO})
 			return

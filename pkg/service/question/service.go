@@ -108,11 +108,7 @@ func (s *Service) Update(id string, updateQuestionInput model.UpdateQuestionInpu
 	// update question
 	filter := bson.M{"_id": objectId, "owner_id": userId}
 	_, err := collection.UpdateOne(context.Background(), filter, bson.M{
-		"$set": bson.M{
-			"content":            updateQuestionInput.Content,
-			"choices":            updateQuestionInput.Choices,
-			"correct_choice_ids": updateQuestionInput.CorrectChoiceIds,
-		},
+		"$set": updateQuestionInput,
 	})
 
 	if err != nil {
