@@ -18,7 +18,7 @@ type Service struct {
 }
 
 // implement function create question return question id
-func (s *Service) createQuestion(inputQuestion model.CreateQuestionInput) (string, error) {
+func (s *Service) createQuestion(inputQuestion model.CreateQuestionInput) (*model.Question, error) {
 	// collection
 	collection := db.Client.Database(db.DATABASE).Collection(db.QUESTION_COLLECTION)
 
@@ -33,11 +33,12 @@ func (s *Service) createQuestion(inputQuestion model.CreateQuestionInput) (strin
 	}
 	result, err := collection.InsertOne(context.Background(), question)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	// return question id
-	questionId := result.InsertedID.(primitive.ObjectID).Hex()
-	return questionId, nil
+	questionId := result.InsertedID.(primitive.ObjectID)
+	question.Id = questionId
+	return &question, nil
 }
 
 func (s *Service) CreateQuiz(inputQuiz model.CreateQuizInput) (*model.Quiz, error) {
@@ -60,9 +61,9 @@ func (s *Service) CreateQuiz(inputQuiz model.CreateQuizInput) (*model.Quiz, erro
 	return &quiz, nil
 }
 
-func (s *Service) CreateAndInsertQuestionToQuiz(quizId string, question model.CreateQuestionInput) (*model.Quiz, error) {
+func (s *Service) CreateAndInsertQuestionToQuiz(quizId string, createQuestionInput model.CreateQuestionInput) (*model.CreateAndInsertQuestionToQuizResponse, error) {
 	// create question
-	questionId, err := s.createQuestion(question)
+	question, err := s.createQuestion(createQuestionInput)
 	if err != nil {
 		return nil, err
 	}
@@ -72,12 +73,12 @@ func (s *Service) CreateAndInsertQuestionToQuiz(quizId string, question model.Cr
 
 	// update quiz
 	objectId, _ := primitive.ObjectIDFromHex(quizId)
-	filter := bson.M{"_id": objectId, "owner_id": question.OwnerId}
+	filter := bson.M{"_id": objectId, "owner_id": createQuestionInput.OwnerId}
 
 	// write condition $ifNull
 	condition := bson.M{"$ifNull": bson.A{
-		bson.M{"$concatArrays": bson.A{"$question_ids", bson.A{questionId}}},
-		bson.A{questionId},
+		bson.M{"$concatArrays": bson.A{"$question_ids", bson.A{question.Id.Hex()}}},
+		bson.A{question.Id.Hex()},
 	}}
 	// aggressive update, need wrap it in array
 	update := bson.A{
@@ -96,8 +97,12 @@ func (s *Service) CreateAndInsertQuestionToQuiz(quizId string, question model.Cr
 		return nil, err
 	}
 
+	data := model.CreateAndInsertQuestionToQuizResponse{
+		Quiz:     *quiz,
+		Question: *question,
+	}
 	// return quiz
-	return quiz, nil
+	return &data, nil
 }
 
 // remove question from quiz

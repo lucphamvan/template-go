@@ -48,6 +48,11 @@ type RemoveQuestionInput struct {
 }
 
 type GetListQuizzesResponse struct {
-	Items []Quiz `json:"items,omitempty"`
-	Total int64  `json:"total,omitempty"`
+	Items []Quiz `json:"items"`
+	Total int64  `json:"total"`
+}
+
+type CreateAndInsertQuestionToQuizResponse struct {
+	Quiz     Quiz     `json:"quiz,omitempty"`
+	Question Question `json:"question,omitempty"`
 }

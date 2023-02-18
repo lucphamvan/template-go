@@ -42,6 +42,6 @@ type UpdateQuestionInput struct {
 }
 
 type ListQuestionResponse struct {
-	Items []Question `json:"items,omitempty"`
-	Total int64      `json:"total,omitempty"`
+	Items []Question `json:"items"`
+	Total int64      `json:"total"`
 }

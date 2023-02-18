@@ -19,6 +19,13 @@ definitions:
     - content
     - id
     type: object
+  model.CreateAndInsertQuestionToQuizResponse:
+    properties:
+      question:
+        $ref: '#/definitions/model.Question'
+      quiz:
+        $ref: '#/definitions/model.Quiz'
+    type: object
   model.CreateQuestionInput:
     properties:
       choices:
@@ -403,7 +410,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Quiz'
+            $ref: '#/definitions/model.CreateAndInsertQuestionToQuizResponse'
         "400":
           description: Bad Request
       security:

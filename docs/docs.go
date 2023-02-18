@@ -314,7 +314,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Quiz"
+                            "$ref": "#/definitions/model.CreateAndInsertQuestionToQuizResponse"
                         }
                     },
                     "400": {
@@ -699,6 +699,17 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                }
+            }
+        },
+        "model.CreateAndInsertQuestionToQuizResponse": {
+            "type": "object",
+            "properties": {
+                "question": {
+                    "$ref": "#/definitions/model.Question"
+                },
+                "quiz": {
+                    "$ref": "#/definitions/model.Quiz"
                 }
             }
         },

@@ -61,7 +61,7 @@ func (h *Handler) CreateQuiz(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path string true "quiz id"
 // @Param question body model.CreateQuestionInput true "request body"
-// @Success 200 {object} model.Quiz
+// @Success 200 {object} model.CreateAndInsertQuestionToQuizResponse
 // @Failure 400
 // @Router /quizzes/{id}/insert-question [patch]
 func (h *Handler) InsertQuestion(c *gin.Context) {
@@ -78,13 +78,13 @@ func (h *Handler) InsertQuestion(c *gin.Context) {
 
 	// create and insert question to quiz
 	quizId := c.Param("id")
-	quiz, err := h.service.CreateAndInsertQuestionToQuiz(quizId, createQuestionInput)
+	data, err := h.service.CreateAndInsertQuestionToQuiz(quizId, createQuestionInput)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, quiz)
+	c.JSON(http.StatusOK, data)
 }
 
 // RemoveQuestion godoc

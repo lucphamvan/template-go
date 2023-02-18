@@ -26,6 +26,6 @@ type UpdateUserInput struct {
 }
 
 type ListUserResponse struct {
-	Items []User `json:"items,omitempty"`
-	Total int64  `json:"total,omitempty"`
+	Items []User `json:"items"`
+	Total int64  `json:"total"`
 }
