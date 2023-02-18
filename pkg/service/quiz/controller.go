@@ -143,3 +143,29 @@ func (h *Handler) GetQuizzes(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, data)
 }
+
+// GetQuestions godoc
+// @Summary get question of quiz
+// @Schemes
+// @Description get question of quiz
+// @Tags quizzes
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "quiz id"
+// @Success 200 {object} []model.Question
+// @Failure 400
+// @Router /quizzes/{id}/questions [get]
+func (h *Handler) GetQuestions(c *gin.Context) {
+	// ownder id
+	ownerId := c.Request.Header.Get(common.USER_ID_HEADER)
+	quizId := c.Param("id")
+
+	// get questions of quiz
+	questions, err := h.service.GetQuestions(quizId, ownerId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, questions)
+}

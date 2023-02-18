@@ -167,4 +167,52 @@ func (s *Service) GetQuizzes(ownerId string, limit int64, offset int64) (*model.
 	return &data, nil
 }
 
+// get quiz
+func (s *Service) GetQuiz(quizId string, ownerId string) (*model.Quiz, error) {
+	// collection
+	collection := db.Client.Database(db.DATABASE).Collection(db.QUIZ_COLLECTION)
+	// filter
+	objectId, _ := primitive.ObjectIDFromHex(quizId)
+	filter := bson.M{"_id": objectId, "owner_id": ownerId, "deleted": false}
+	// find quiz
+	result := collection.FindOne(context.Background(), filter)
+	quiz := new(model.Quiz)
+	err := result.Decode(quiz)
+	if err != nil {
+		return nil, err
+	}
+	return quiz, nil
+}
+
+// get questions of quiz
+func (s *Service) GetQuestions(quizId string, ownerId string) (*[]model.Question, error) {
+	// get quiz
+	quiz, err := s.GetQuiz(quizId, ownerId)
+	if err != nil {
+		return nil, err
+	}
+
+	listObjIds := make([]primitive.ObjectID, len(quiz.QuestionIds))
+	for i, id := range quiz.QuestionIds {
+		objId, _ := primitive.ObjectIDFromHex(id)
+		listObjIds[i] = objId
+	}
+	// filter question have id in quiz.question_ids
+	filter := bson.M{"_id": bson.M{"$in": listObjIds}}
+	// collection
+	collection := db.Client.Database(db.DATABASE).Collection(db.QUESTION_COLLECTION)
+	// find questions
+	cursor, err := collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	// decode questions
+	var questions []model.Question
+	err = cursor.All(context.Background(), &questions)
+	if err != nil {
+		return nil, err
+	}
+	return &questions, nil
+}
+
 var ServiceInstance = new(Service)
