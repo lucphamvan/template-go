@@ -323,6 +323,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/quizzes/{id}/publish": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "publish quiz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "publish quiz",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "quiz id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Quiz"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/quizzes/{id}/questions": {
             "get": {
                 "security": [
@@ -919,11 +959,11 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "is_publish": {
-                    "type": "boolean"
-                },
                 "owner_id": {
                     "type": "string"
+                },
+                "published": {
+                    "type": "boolean"
                 },
                 "question_ids": {
                     "type": "array",

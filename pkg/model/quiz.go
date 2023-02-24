@@ -9,7 +9,7 @@ type Quiz struct {
 	Id        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	OwnerId   string             `json:"owner_id,omitempty" bson:"owner_id"`
 	Code      string             `json:"code,omitempty" bson:"code"`
-	IsPublish bool               `json:"is_publish,omitempty" bson:"is_publish"`
+	Published bool               `json:"published,omitempty" bson:"published"`
 
 	QuestionIds []string    `json:"question_ids,omitempty" bson:"question_ids"`
 	Setting     QuizSetting `json:"setting,omitempty" bson:"setting"`

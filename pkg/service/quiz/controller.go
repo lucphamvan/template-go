@@ -169,3 +169,29 @@ func (h *Handler) GetQuestions(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, questions)
 }
+
+// PublishQuiz godoc
+// @Summary publish quiz
+// @Schemes
+// @Description publish quiz
+// @Tags quizzes
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "quiz id"
+// @Success 200 {object} model.Quiz
+// @Failure 400
+// @Router /quizzes/{id}/publish [patch]
+func (h *Handler) PublishQuiz(c *gin.Context) {
+	// quiz id
+	quizId := c.Param("id")
+	// owner id
+	ownerId := c.Request.Header.Get(common.USER_ID_HEADER)
+	// publish quiz
+	quiz, err := h.service.PublishQuiz(quizId, ownerId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, quiz)
+}

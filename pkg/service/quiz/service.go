@@ -215,4 +215,27 @@ func (s *Service) GetQuestions(quizId string, ownerId string) (*[]model.Question
 	return &questions, nil
 }
 
+// publish quiz
+func (s *Service) PublishQuiz(quizId string, ownerId string) (*model.Quiz, error) {
+	// collection
+	collection := db.Client.Database(db.DATABASE).Collection(db.QUIZ_COLLECTION)
+	// update quiz
+	objectId, _ := primitive.ObjectIDFromHex(quizId)
+	filter := bson.M{"_id": objectId, "owner_id": ownerId}
+	update := bson.M{"$set": bson.M{"published": true}}
+	_, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return nil, err
+	}
+	// find quiz
+	result := collection.FindOne(context.Background(), bson.M{"_id": objectId})
+	quiz := new(model.Quiz)
+	err = result.Decode(quiz)
+	if err != nil {
+		return nil, err
+	}
+	return quiz, nil
+
+}
+
 var ServiceInstance = new(Service)

@@ -54,6 +54,7 @@ func SetupRouter() *gin.Engine {
 	authRouter.DELETE("/quizzes/:id/remove-question/:questionId", quizHandler.RemoveQuestion)
 	authRouter.GET("/quizzes/:id/questions", quizHandler.GetQuestions)
 	authRouter.GET("/quizzes", middleware.ValidateLimitOffset, quizHandler.GetQuizzes)
+	authRouter.PATCH("/quizzes/:id/publish", quizHandler.PublishQuiz)
 
 	// questions
 	authRouter.GET("/questions", middleware.ValidateLimitOffset, questionHandler.GetQuestions)

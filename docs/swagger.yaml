@@ -135,10 +135,10 @@ definitions:
         type: boolean
       id:
         type: string
-      is_publish:
-        type: boolean
       owner_id:
         type: string
+      published:
+        type: boolean
       question_ids:
         items:
           type: string
@@ -416,6 +416,31 @@ paths:
       security:
       - BearerAuth: []
       summary: create and insert question to quiz
+      tags:
+      - quizzes
+  /quizzes/{id}/publish:
+    patch:
+      consumes:
+      - application/json
+      description: publish quiz
+      parameters:
+      - description: quiz id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Quiz'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: publish quiz
       tags:
       - quizzes
   /quizzes/{id}/questions:
