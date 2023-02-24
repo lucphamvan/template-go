@@ -367,7 +367,7 @@ const docTemplate = `{
             }
         },
         "/quizzes/{id}/remove-question/{questionId}": {
-            "patch": {
+            "delete": {
                 "security": [
                     {
                         "BearerAuth": []

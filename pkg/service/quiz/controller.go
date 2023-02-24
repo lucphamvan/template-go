@@ -99,7 +99,7 @@ func (h *Handler) InsertQuestion(c *gin.Context) {
 // @Param questionId path string true "question id"
 // @Success 200 {object} model.Quiz
 // @Failure 400
-// @Router /quizzes/{id}/remove-question/{questionId} [patch]
+// @Router /quizzes/{id}/remove-question/{questionId} [delete]
 func (h *Handler) RemoveQuestion(c *gin.Context) {
 	// quiz id
 	quizId := c.Param("id")

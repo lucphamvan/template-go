@@ -446,7 +446,7 @@ paths:
       tags:
       - quizzes
   /quizzes/{id}/remove-question/{questionId}:
-    patch:
+    delete:
       consumes:
       - application/json
       description: remove question from quiz
