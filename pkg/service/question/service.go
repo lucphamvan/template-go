@@ -35,7 +35,7 @@ func (s *Service) GetList(limit, offset int64, ownerId string) (*model.ListQuest
 	}
 
 	// questions
-	var questions []model.Question
+	var questions = make([]model.Question, 0)
 	err = cursor.All(context.Background(), &questions)
 	if err != nil {
 		return nil, err

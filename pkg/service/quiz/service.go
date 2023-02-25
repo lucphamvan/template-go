@@ -146,7 +146,7 @@ func (s *Service) GetQuizzes(ownerId string, limit int64, offset int64) (*model.
 		return nil, err
 	}
 	// decode quiz
-	var quizzes []model.Quiz
+	var quizzes = make([]model.Quiz, 0)
 	err = cursor.All(context.Background(), &quizzes)
 	if err != nil {
 		return nil, err

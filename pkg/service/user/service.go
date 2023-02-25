@@ -76,7 +76,7 @@ func (s *Service) GetList(limit int64, offset int64) (*model.ListUserResponse, e
 		return nil, err
 	}
 	// mapping value
-	var users []model.User
+	var users = make([]model.User, 0)
 	err = cursor.All(context.Background(), &users)
 	if err != nil {
 		return nil, err
