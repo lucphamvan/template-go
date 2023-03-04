@@ -238,4 +238,48 @@ func (s *Service) PublishQuiz(quizId string, ownerId string) (*model.Quiz, error
 
 }
 
+// update quiz setting
+func (s *Service) UpdateQuizSetting(quizId string, ownerId string, setting model.QuizSetting) (*model.Quiz, error) {
+	// collection
+	collection := db.Client.Database(db.DATABASE).Collection(db.QUIZ_COLLECTION)
+	// update quiz
+	objectId, _ := primitive.ObjectIDFromHex(quizId)
+	filter := bson.M{"_id": objectId, "owner_id": ownerId}
+	update := bson.M{"$set": bson.M{"setting": setting}}
+	_, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return nil, err
+	}
+	// find quiz
+	result := collection.FindOne(context.Background(), bson.M{"_id": objectId})
+	quiz := new(model.Quiz)
+	err = result.Decode(quiz)
+	if err != nil {
+		return nil, err
+	}
+	return quiz, nil
+}
+
+// delete quiz
+func (s *Service) DeleteQuiz(quizId string, ownerId string) (*model.Quiz, error) {
+	// collection
+	collection := db.Client.Database(db.DATABASE).Collection(db.QUIZ_COLLECTION)
+	// update quiz
+	objectId, _ := primitive.ObjectIDFromHex(quizId)
+	filter := bson.M{"_id": objectId, "owner_id": ownerId}
+	update := bson.M{"$set": bson.M{"deleted": true}}
+	_, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return nil, err
+	}
+	// find quiz
+	result := collection.FindOne(context.Background(), bson.M{"_id": objectId})
+	quiz := new(model.Quiz)
+	err = result.Decode(quiz)
+	if err != nil {
+		return nil, err
+	}
+	return quiz, nil
+}
+
 var ServiceInstance = new(Service)

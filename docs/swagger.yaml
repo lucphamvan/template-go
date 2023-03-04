@@ -387,6 +387,55 @@ paths:
       summary: create quiz
       tags:
       - quizzes
+  /quizzes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete quiz
+      parameters:
+      - description: quiz id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Quiz'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: delete quiz
+      tags:
+      - quizzes
+    get:
+      consumes:
+      - application/json
+      description: get quiz
+      parameters:
+      - description: quiz id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Quiz'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: get quiz
+      tags:
+      - quizzes
   /quizzes/{id}/insert-question:
     patch:
       consumes:
@@ -498,6 +547,37 @@ paths:
       security:
       - BearerAuth: []
       summary: remove question from quiz
+      tags:
+      - quizzes
+  /quizzes/{id}/update-setting:
+    patch:
+      consumes:
+      - application/json
+      description: update quiz setting
+      parameters:
+      - description: quiz id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: quiz setting
+        in: body
+        name: quizSetting
+        required: true
+        schema:
+          $ref: '#/definitions/model.QuizSetting'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Quiz'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: update quiz setting
       tags:
       - quizzes
   /token/refresh:

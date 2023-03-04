@@ -195,3 +195,88 @@ func (h *Handler) PublishQuiz(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, quiz)
 }
+
+// GetQuiz godoc
+// @Summary get quiz
+// @Schemes
+// @Description get quiz
+// @Tags quizzes
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "quiz id"
+// @Success 200 {object} model.Quiz
+// @Failure 400
+// @Router /quizzes/{id} [get]
+func (h *Handler) GetQuiz(c *gin.Context) {
+	// quiz id
+	quizId := c.Param("id")
+	// owner id
+	ownerId := c.Request.Header.Get(common.USER_ID_HEADER)
+	// get quiz
+	quiz, err := h.service.GetQuiz(quizId, ownerId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, quiz)
+}
+
+// UpdateQuizSetting godoc
+// @Summary update quiz setting
+// @Schemes
+// @Description update quiz setting
+// @Tags quizzes
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "quiz id"
+// @Param quizSetting body model.QuizSetting true "quiz setting"
+// @Success 200 {object} model.Quiz
+// @Failure 400
+// @Router /quizzes/{id}/update-setting [patch]
+func (h *Handler) UpdateQuizSetting(c *gin.Context) {
+	// quiz id
+	quizId := c.Param("id")
+	// owner id
+	ownerId := c.Request.Header.Get(common.USER_ID_HEADER)
+	// update quiz setting
+	var quizSetting model.QuizSetting
+	err := c.ShouldBindJSON(&quizSetting)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
+		return
+	}
+	quiz, err := h.service.UpdateQuizSetting(quizId, ownerId, quizSetting)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, quiz)
+}
+
+// DeleteQuiz godoc
+// @Summary delete quiz
+// @Schemes
+// @Description delete quiz
+// @Tags quizzes
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "quiz id"
+// @Success 200 {object} model.Quiz
+// @Failure 400
+// @Router /quizzes/{id} [delete]
+func (h *Handler) DeleteQuiz(c *gin.Context) {
+	// quiz id
+	quizId := c.Param("id")
+	// owner id
+	ownerId := c.Request.Header.Get(common.USER_ID_HEADER)
+	// delete quiz
+	quiz, err := h.service.DeleteQuiz(quizId, ownerId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, quiz)
+}
