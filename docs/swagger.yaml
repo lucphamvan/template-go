@@ -49,15 +49,6 @@ definitions:
     - content
     - correct_choice_ids
     type: object
-  model.CreateQuizInput:
-    properties:
-      owner_id:
-        type: string
-      setting:
-        $ref: '#/definitions/model.QuizSetting'
-    required:
-    - setting
-    type: object
   model.CreateUserInput:
     properties:
       avatar:
@@ -372,7 +363,7 @@ paths:
         name: quiz
         required: true
         schema:
-          $ref: '#/definitions/model.CreateQuizInput'
+          $ref: '#/definitions/model.QuizSetting'
       produces:
       - application/json
       responses:

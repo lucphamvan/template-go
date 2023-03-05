@@ -27,20 +27,22 @@ func NewHanlder(service Service) *Handler {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param quiz body model.CreateQuizInput true "request body"
+// @Param quiz body model.QuizSetting true "request body"
 // @Success 200 {object} model.Quiz
 // @Failure 400
 // @Router /quizzes [post]
 func (h *Handler) CreateQuiz(c *gin.Context) {
-	var createQuizInput model.CreateQuizInput
+	var quizSetting model.QuizSetting
 	// validate request body
-	err := common.ValidateBodyData(c, &createQuizInput)
+	err := common.ValidateBodyData(c, &quizSetting)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, model.Error{Error: err.Error()})
 		return
 	}
+	var createQuizInput model.CreateQuizInput
 	// insert owner id
 	createQuizInput.OwnerId = c.Request.Header.Get(common.USER_ID_HEADER)
+	createQuizInput.Setting = quizSetting
 	// create quiz
 	quiz, err := h.service.CreateQuiz(createQuizInput)
 	if err != nil {

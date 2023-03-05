@@ -257,7 +257,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateQuizInput"
+                            "$ref": "#/definitions/model.QuizSetting"
                         }
                     }
                 ],
@@ -953,20 +953,6 @@ const docTemplate = `{
                 },
                 "owner_id": {
                     "type": "string"
-                }
-            }
-        },
-        "model.CreateQuizInput": {
-            "type": "object",
-            "required": [
-                "setting"
-            ],
-            "properties": {
-                "owner_id": {
-                    "type": "string"
-                },
-                "setting": {
-                    "$ref": "#/definitions/model.QuizSetting"
                 }
             }
         },
