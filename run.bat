@@ -1,1 +1,1 @@
-go run .\cmd\app\main.go
+go run .\app\main.go

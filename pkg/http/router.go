@@ -7,9 +7,9 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"tchh.lucpham/pkg/middleware"
-	"tchh.lucpham/pkg/service/question"
-	"tchh.lucpham/pkg/service/quiz"
-	"tchh.lucpham/pkg/service/user"
+	"tchh.lucpham/pkg/module/question"
+	"tchh.lucpham/pkg/module/quiz"
+	"tchh.lucpham/pkg/module/user"
 )
 
 func healcheck(c *gin.Context) {

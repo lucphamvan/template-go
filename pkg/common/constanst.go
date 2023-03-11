@@ -1,5 +1,6 @@
 package common
 
+// const for error message
 const (
 	ERROR                      = "error"
 	ERROR_BIND_JSON            = "failed to bind json request body"

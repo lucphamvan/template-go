@@ -1,1 +1,1 @@
-go build .\cmd\app\main.go
+go build .\app\main.go

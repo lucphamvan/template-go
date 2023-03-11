@@ -1,1 +1,1 @@
-swag init -d .\cmd\app --parseDependency
+swag init -d .\app --parseDependency

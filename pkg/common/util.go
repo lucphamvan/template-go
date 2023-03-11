@@ -2,6 +2,7 @@ package common
 
 import (
 	"errors"
+	"math/rand"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -96,4 +97,15 @@ func VerifyAccToken(token string) (*Claims, error) {
 
 func VerifyRefToken(token string) (*Claims, error) {
 	return verifyToken(token, REF_SECRET_KEY)
+}
+
+// generate unique string with length n
+func GenUUID(n int) string {
+	var letter = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letter[rand.Intn(len(letter))]
+	}
+	return string(b)
 }

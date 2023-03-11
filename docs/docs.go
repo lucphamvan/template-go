@@ -1098,12 +1098,6 @@ const docTemplate = `{
                 "start_time"
             ],
             "properties": {
-                "allowed_emails": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "duration": {
                     "type": "integer"
                 },

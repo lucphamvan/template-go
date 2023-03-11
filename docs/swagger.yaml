@@ -139,10 +139,6 @@ definitions:
     type: object
   model.QuizSetting:
     properties:
-      allowed_emails:
-        items:
-          type: string
-        type: array
       duration:
         type: integer
       end_time:

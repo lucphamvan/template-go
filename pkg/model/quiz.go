@@ -19,11 +19,16 @@ type Quiz struct {
 }
 
 type QuizSetting struct {
-	Name          string   `json:"name,omitempty" bson:"name" validate:"required"`
-	StartTime     float64  `json:"start_time,omitempty" bson:"start_time" validate:"required"`
-	EndTime       float64  `json:"end_time,omitempty" bson:"end_time" validate:"required,gtefield=StartTime"`
-	Duration      int      `json:"duration,omitempty" bson:"duration" validate:"required"`
-	AllowedEmails []string `json:"allowed_emails,omitempty" bson:"allowed_emails"`
+	Name      string  `json:"name,omitempty" bson:"name" validate:"required"`
+	StartTime float64 `json:"start_time,omitempty" bson:"start_time" validate:"required"`
+	EndTime   float64 `json:"end_time,omitempty" bson:"end_time" validate:"required,gtefield=StartTime"`
+	Duration  int     `json:"duration,omitempty" bson:"duration" validate:"required"`
+}
+
+type AcceptedEmail struct {
+	Id     primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	Email  string             `json:"email,omitempty" bson:"email" validate:"required,email"`
+	QuizId string             `json:"quiz_id,omitempty" bson:"quiz_id" validate:"required"`
 }
 
 type QuizAnswer struct {
